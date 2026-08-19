@@ -1,546 +1,364 @@
-# 🎬 RecoSphere — Multi-Model Recommendation System
+# CineSync — Multi-Modal Recommendation System
 
-[![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](#)
-[![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Multi--Model-orange.svg)](#)
-[![FastAPI](https://img.shields.io/badge/API-FastAPI-009688.svg)](#)
+A cross-platform recommendation engine that suggests movies, shows, and music (Netflix, Amazon Prime, Spotify-style catalogs, etc.) by combining multiple data modalities — user ratings, text (plot/lyrics/reviews), and metadata (genre, cast, audio features) — into a single hybrid recommendation pipeline.
 
-> **RecoSphere** is a personalized recommendation system that recommends movies, TV shows, music, and other entertainment based on user preferences, previous interactions, content similarity, and platform availability.
-
-The main goal is to combine **multiple recommendation models** instead of depending on a single algorithm.
+> Rename the title above to whatever you're calling the project — this is just a placeholder.
 
 ---
 
-## 📋 Table of Contents
+## 1. Overview
 
-- [🎯 Project Goal](#-project-goal)
-- [🧠 How It Works](#-how-it-works)
-- [🚀 Key Features](#-key-features)
-- [📁 Project Structure](#-project-structure)
-- [👥 Team Responsibilities](#-team-responsibilities)
-- [🗺️ Development Phases](#️-development-phases)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [⚙️ Prerequisites](#️-prerequisites)
-- [⚙️ Setup](#️-setup)
-- [📊 Model Evaluation](#-model-evaluation)
-- [📌 Project Status](#-project-status)
-- [👨‍💻 Team](#-team)
-- [📄 License](#-license)
+Most recommendation systems rely on a single signal (ratings only, or content only). This project builds a **multi-modal** system that fuses:
+
+- **Collaborative signals** — user-item interaction/rating history
+- **Content signals** — text (descriptions, reviews, subtitles/lyrics) via NLP embeddings
+- **Metadata signals** — genre, cast/artist, release year, runtime/duration, platform
+- **(Stretch) Visual/audio signals** — poster images or audio features, if time allows
+
+The output is a hybrid model that can recommend across domains (movies + music) and across platforms (Netflix-style + Prime-style + audio catalogs), rather than being locked into one dataset.
 
 ---
 
-## 🎯 Project Goal
+## 2. Prerequisites
 
-The system aims to answer:
+### Knowledge
+- Python fundamentals, basic OOP
+- Pandas/NumPy for data wrangling
+- Basic ML concepts (regression, classification, clustering, embeddings)
+- Git/GitHub workflow (branches, PRs, merge conflicts)
+- Basic REST API concepts
 
-> **"What should I watch or listen to next?"**
+### Software / Tools
+| Tool | Purpose | Version |
+|---|---|---|
+| Python | Core language | 3.10+ |
+| pip / venv or conda | Environment management | latest |
+| Git & GitHub | Version control | latest |
+| Jupyter Notebook / VS Code | Development | latest |
+| Docker (optional) | Containerized deployment | latest |
 
-It will analyze a user's preferences and behavior and generate personalized recommendations.
-
-For example:
-
-```text
-User likes:
-Interstellar
-The Martian
-Arrival
-
-        ↓
-
-Recommendation System
-
-        ↓
-
-Recommended:
-Blade Runner 2049
-Gravity
-Dune
+### Core Libraries
+```
+pandas
+numpy
+scikit-learn
+torch                 # for deep learning / embeddings
+transformers          # for text embeddings (BERT/SBERT)
+sentence-transformers # semantic similarity for content-based filtering
+surprise               # collaborative filtering (SVD, KNN)
+fastapi                # backend API
+uvicorn                # ASGI server
+streamlit / react      # frontend (pick one based on team skillset)
+matplotlib / seaborn   # EDA & visualization
 ```
 
-The system can also filter recommendations based on platforms such as **Netflix, Amazon Prime, Spotify, etc.**
-
----
-
-## 🧠 How It Works
-
-RecoSphere uses multiple models and combines their results.
-
-```text
-                    User
-                      │
-                      ▼
-              User Preferences
-                      │
-          ┌───────────┼───────────┐
-          ▼           ▼           ▼
-     Content       Collaborative  Popularity
-      Model           Model         Model
-          │           │           │
-          └───────────┼───────────┘
-                      ▼
-               Hybrid Model
-                      │
-                      ▼
-             Final Recommendations
-```
-
-### Models
-
-**1. Content-Based**
-
-Recommends items similar to what the user already likes.
-
-**2. Collaborative Filtering**
-
-Finds patterns between users and recommends items liked by users with similar behavior.
-
-**3. Popularity-Based**
-
-Provides popular/trending recommendations, especially useful for new users.
-
-**4. Hybrid Model**
-
-Combines the outputs of the different models to produce the final recommendation list.
-
----
-
-## 🚀 Key Features
-
-- 🎬 Personalized movie & TV recommendations
-- 🎵 Support for multiple entertainment categories
-- 🤖 Multiple recommendation models
-- 🔄 Hybrid recommendation engine
-- 👤 User preference and interaction tracking
-- 📺 Platform-based filtering
-- 🔍 Search and similar-content recommendations
-- 💡 Basic explanation of why something was recommended
-- 📊 Model performance evaluation
-
----
-
-## 📁 Project Structure
-
-```text
-RecoSphere/
-│
-├── data/                 # Datasets
-│
-├── notebooks/            # Data analysis & experiments
-│
-├── src/
-│   ├── data/             # Data processing
-│   ├── features/         # Feature engineering
-│   ├── models/           # Recommendation models
-│   └── evaluation/       # Model evaluation
-│
-├── models/               # Trained models
-│
-├── api/                  # FastAPI backend
-│
-├── frontend/             # User interface
-│
-├── tests/                # Testing
-│
-├── requirements.txt      # Python dependencies
-└── README.md
-```
-
----
-
-## 👥 Team Responsibilities
-
-The project is divided into three major areas.
-
-### 👨‍💻 Member 1 — Data & Features
-
-Responsible for:
-
-- Finding and collecting datasets
-- Data cleaning
-- Exploratory Data Analysis
-- Data preprocessing
-- Feature engineering
-
-**Main folders:**
-
-```text
-data/
-notebooks/
-src/data/
-src/features/
-```
-
----
-
-### 🤖 Member 2 — Machine Learning
-
-Responsible for:
-
-- Content-Based model
-- Collaborative Filtering
-- Popularity model
-- Hybrid recommendation
-- Model evaluation
-
-**Main folders:**
-
-```text
-src/models/
-src/evaluation/
-models/
-```
-
----
-
-### 💻 Member 3 — Backend & Frontend
-
-Responsible for:
-
-- FastAPI backend
-- API development
-- Database integration
-- Frontend
-- Connecting the ML models with the application
-
-**Main folders:**
-
-```text
-api/
-frontend/
-tests/
-```
-
----
-
-## 🗺️ Development Phases
-
-### Phase 1 — Planning & Dataset
-
-- Finalize project requirements
-- Select datasets
-- Design system architecture
-- Divide responsibilities among team members
-
-**Deliverables:**
-
-```text
-Project Requirements
-Dataset Selection
-System Architecture
-Initial Repository Structure
-```
-
----
-
-### Phase 2 — Data Processing
-
-- Collect datasets
-- Clean datasets
-- Handle missing values
-- Perform EDA
-- Create useful features
-- Prepare data for machine learning
-
-**Deliverables:**
-
-```text
-Clean Dataset
-EDA
-Preprocessing Pipeline
-Feature Dataset
-```
-
----
-
-### Phase 3 — Recommendation Models
-
-- Build Content-Based model
-- Build Collaborative Filtering model
-- Build Popularity model
-- Train and test individual models
-
-**Deliverables:**
-
-```text
-Content-Based Model
-Collaborative Filtering Model
-Popularity Model
-Initial Evaluation Results
-```
-
----
-
-### Phase 4 — Hybrid System
-
-- Combine model results
-- Create final ranking system
-- Experiment with model weights
-- Compare hybrid results with individual models
-
-**Deliverables:**
-
-```text
-Hybrid Recommendation Engine
-Final Ranking System
-Model Comparison
-```
-
----
-
-### Phase 5 — Application
-
-- Build backend API
-- Build frontend
-- Connect database
-- Connect ML models with backend
-- Display recommendations to users
-
-**Deliverables:**
-
-```text
-FastAPI Backend
-Frontend Application
-Database Integration
-ML/API Integration
-```
-
----
-
-### Phase 6 — Testing & Deployment
-
-- Test the complete system
-- Perform API testing
-- Test recommendation quality
-- Fix bugs
-- Optimize performance
-- Deploy the final application
-
-**Deliverables:**
-
-```text
-Tested Application
-Performance Results
-Final Documentation
-Deployed System
-```
-
----
-
-## 🛠️ Tech Stack
-
-### Machine Learning
-
-- Python
-- Pandas
-- NumPy
-- Scikit-learn
-
-### Backend
-
-- FastAPI
-- Uvicorn
-
-### Frontend
-
-- React / JavaScript
-- HTML
-- CSS
-
-### Database
-
-- PostgreSQL / MongoDB
-
-### Development
-
-- Git
-- GitHub
-- Jupyter Notebook
-- VS Code
-
----
-
-## ⚙️ Prerequisites
-
-Before setting up the project, make sure the following are installed:
-
-- Python 3.11+
-- Git
-- VS Code or another code editor
-- Node.js and npm if using React
-- PostgreSQL or MongoDB if using a database
-
-Check Python:
-
-```bash
-python --version
-```
-
-Check Git:
-
-```bash
-git --version
-```
-
-Check Node.js:
-
-```bash
-node --version
-```
-
----
-
-## ⚙️ Setup
-
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd RecoSphere
-```
-
-### 2. Create Virtual Environment
-
-```bash
-python -m venv .venv
-```
-
-### 3. Activate the Virtual Environment
-
-**Windows:**
-
-```bash
-.venv\Scripts\activate
-```
-
-**Linux/macOS:**
-
-```bash
-source .venv/bin/activate
-```
-
-### 4. Install Python Dependencies
-
+Install everything with:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Install Frontend Dependencies
+### Datasets (starting points)
+- [MovieLens 25M](https://grouplens.org/datasets/movielens/) — movie ratings + metadata
+- [TMDB 5000 Movies](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata) — plots, cast, genres
+- [Million Song Dataset](http://millionsongdataset.com/) or [Spotify Tracks Dataset](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset) — music metadata
+- Optional: scrape/collect a small Netflix/Prime-style catalog sample for platform-specific demo data
 
-If the project uses React:
+---
+
+## 3. Project / File Structure
+
+```
+recommendation-system/
+│
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── .env.example
+│
+├── data/
+│   ├── raw/                  # original untouched datasets
+│   ├── processed/            # cleaned, merged datasets
+│   └── external/             # scraped / supplementary data
+│
+├── notebooks/
+│   ├── 01_eda_movies.ipynb
+│   ├── 02_eda_music.ipynb
+│   ├── 03_content_based_model.ipynb
+│   ├── 04_collaborative_filtering.ipynb
+│   └── 05_hybrid_model_evaluation.ipynb
+│
+├── src/
+│   ├── data/
+│   │   ├── load_data.py
+│   │   ├── clean_data.py
+│   │   └── merge_datasets.py
+│   │
+│   ├── features/
+│   │   ├── text_embeddings.py       # SBERT/TF-IDF embeddings
+│   │   ├── metadata_features.py
+│   │   └── audio_features.py        # optional
+│   │
+│   ├── models/
+│   │   ├── content_based.py
+│   │   ├── collaborative_filtering.py
+│   │   ├── hybrid_recommender.py
+│   │   └── evaluate.py
+│   │
+│   ├── api/
+│   │   ├── main.py                  # FastAPI entrypoint
+│   │   ├── routes/
+│   │   │   ├── recommend.py
+│   │   │   └── users.py
+│   │   └── schemas.py
+│   │
+│   └── utils/
+│       ├── config.py
+│       └── logger.py
+│
+├── frontend/
+│   ├── (React app OR Streamlit app files)
+│
+├── models_saved/                    # trained model artifacts (.pkl, .pt)
+│
+├── tests/
+│   ├── test_data.py
+│   ├── test_models.py
+│   └── test_api.py
+│
+└── docs/
+    ├── architecture.png
+    ├── report.md
+    └── presentation.pptx
+```
+
+---
+
+## 4. Development Phases
+
+### Phase 1 — Planning & Setup (Week 1)
+- [ ] Finalize scope: which domains (movies, music, both?), which platforms to simulate
+- [ ] Set up GitHub repo, branch strategy (`main`, `dev`, feature branches)
+- [ ] Collect and download datasets
+- [ ] Define success metrics (Precision@K, Recall@K, RMSE, NDCG)
+
+### Phase 2 — Data Collection & EDA (Week 2)
+- [ ] Clean and merge datasets (movies + music)
+- [ ] Handle missing values, duplicates, outliers
+- [ ] Exploratory analysis: genre distribution, rating distribution, user activity
+- [ ] Build a unified schema so movies and music can be recommended through the same pipeline
+
+### Phase 3 — Baseline Models (Weeks 3–4)
+- [ ] **Content-based filtering**: TF-IDF / SBERT embeddings on descriptions, cosine similarity
+- [ ] **Collaborative filtering**: matrix factorization (SVD) or KNN using `surprise`
+- [ ] Evaluate baseline performance separately
+
+### Phase 4 — Multi-Modal Fusion (Weeks 5–6)
+- [ ] Combine content embeddings + collaborative signals + metadata into a hybrid scoring function
+- [ ] Experiment with weighted hybrid vs. learned fusion (small neural net combining embeddings)
+- [ ] Cross-domain testing (does a user's movie taste inform music recommendations, or keep domains separate but unified under one system?)
+
+### Phase 5 — API & Backend (Week 7)
+- [ ] Wrap the trained model in a FastAPI service
+- [ ] Endpoints: `/recommend/{user_id}`, `/similar/{item_id}`, `/search`
+- [ ] Add basic caching for repeated queries
+
+### Phase 6 — Frontend & Integration (Week 8)
+- [ ] Build a simple UI (Streamlit for speed, or React for a polished demo)
+- [ ] Connect frontend to API
+- [ ] Display recommendations with posters/thumbnails, genre tags, platform labels
+
+### Phase 7 — Testing, Evaluation & Documentation (Week 9)
+- [ ] Unit tests for data pipeline, model, API
+- [ ] Evaluate final model against baselines (metrics table in `docs/report.md`)
+- [ ] Write final documentation, architecture diagram, and presentation slides
+
+### Phase 8 — Deployment (Week 10, optional)
+- [ ] Dockerize the app
+- [ ] Deploy API (Render/Railway) and frontend (Vercel/Streamlit Cloud)
+- [ ] Final demo + README polish
+
+---
+
+## 5. Team & Work Division (3 Members)
+
+> Adjust names/roles to match your actual team — structure below assumes roughly equal ML + engineering split.
+
+### Member A — Data & Content-Based Modeling Lead
+- Data collection, cleaning, merging (Phase 2)
+- Text/content embeddings (TF-IDF, SBERT)
+- Content-based recommendation model
+- EDA notebooks
+
+### Member B — Collaborative Filtering & Fusion Lead
+- Collaborative filtering model (SVD/KNN)
+- Hybrid fusion logic (combining content + collaborative + metadata)
+- Model evaluation (Precision@K, Recall@K, NDCG)
+- Performance benchmarking against baselines
+
+### Member C — Backend, Frontend & Deployment Lead
+- FastAPI backend, API design
+- Frontend (Streamlit/React) integration
+- Docker + deployment
+- Testing suite, CI setup (optional GitHub Actions)
+
+### Shared Responsibilities
+- Weekly sync (recommend 2x/week during active dev)
+- Code reviews on every PR before merging to `dev`
+- Final documentation and presentation — all three contribute their section
+
+---
+
+## 6. Branching Strategy
+
+```
+main        → stable, demo-ready code only
+dev         → integration branch, merged after review
+feature/*   → individual work (e.g. feature/content-based-model)
+```
+
+Workflow: create feature branch → commit → open PR into `dev` → 1 teammate reviews → merge → periodically merge `dev` into `main` at phase milestones.
+
+---
+
+## 7. Evaluation Metrics
+
+| Metric | Measures |
+|---|---|
+| Precision@K | Relevance of top-K recommendations |
+| Recall@K | Coverage of relevant items retrieved |
+| RMSE / MAE | Rating prediction accuracy (collaborative filtering) |
+| NDCG | Ranking quality |
+| Diversity / Novelty | Whether recommendations avoid over-repetition |
+
+---
+
+## 8. Setup Instructions
 
 ```bash
-cd frontend
-npm install
+# 1. Clone the repo
+git clone https://github.com/<org>/recommendation-system.git
+cd recommendation-system
+
+# 2. Create virtual environment
+python -m venv venv
+source venv/bin/activate      # Windows: venv\Scripts\activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Run data pipeline
+python src/data/load_data.py
+python src/data/clean_data.py
+
+# 5. Train models
+python src/models/content_based.py
+python src/models/collaborative_filtering.py
+
+# 6. Run the API
+uvicorn src.api.main:app --reload
+
+# 7. Run the frontend (if Streamlit)
+streamlit run frontend/app.py
 ```
 
-### 6. Start the Backend
+---
 
-From the project root:
+## 9. Future Improvements
+- Add visual embeddings from posters/thumbnails (CNN-based)
+- Add audio feature embeddings for music (e.g. tempo, valence from Spotify features)
+- Real-time feedback loop (thumbs up/down updating recommendations)
+- A/B testing framework for comparing model versions
 
-```bash
-uvicorn api.main:app --reload
+---
+
+## 10. Environment Variables
+
+Create a `.env` file (never commit this — only commit `.env.example`):
+
+```
+# .env.example
+DATA_DIR=./data/processed
+MODEL_DIR=./models_saved
+API_PORT=8000
+TMDB_API_KEY=your_key_here          # if pulling live poster/metadata
+SPOTIFY_CLIENT_ID=your_id_here      # if using Spotify API for music data
+SPOTIFY_CLIENT_SECRET=your_secret_here
+LOG_LEVEL=INFO
 ```
 
-### 7. Start the Frontend
+---
 
-```bash
-cd frontend
-npm run dev
+## 11. API Contract (draft)
+
+Documenting the expected request/response shape early saves the frontend dev from waiting on the backend.
+
+**GET** `/recommend/{user_id}?domain=movie&top_k=10`
+```json
+{
+  "user_id": "u_123",
+  "domain": "movie",
+  "recommendations": [
+    {"item_id": "m_456", "title": "Example Movie", "score": 0.92, "genre": ["thriller"], "platform": "netflix"}
+  ]
+}
+```
+
+**GET** `/similar/{item_id}`
+```json
+{
+  "item_id": "m_456",
+  "similar_items": [
+    {"item_id": "m_789", "title": "Another Movie", "similarity": 0.87}
+  ]
+}
+```
+
+**GET** `/search?q=<query>`
+```json
+{
+  "results": [
+    {"item_id": "m_456", "title": "Example Movie", "type": "movie"}
+  ]
+}
 ```
 
 ---
 
-## 📊 Model Evaluation
-
-The models will be compared using recommendation-specific metrics such as:
-
-- **Precision@K**
-- **Recall@K**
-- **NDCG@K**
-- **Coverage**
-- **Diversity**
-
-### Precision@K
-
-Measures how many of the recommended items are relevant to the user.
-
-### Recall@K
-
-Measures how many relevant items were successfully recommended.
-
-### NDCG@K
-
-Measures the quality of the recommendation ranking, giving more importance to relevant items appearing near the top.
-
-### Coverage
-
-Measures how much of the available content catalog can be recommended.
-
-### Diversity
-
-Measures how varied the final recommendation list is.
-
-The final goal is to determine whether the **Hybrid Model** provides better recommendations than the individual models.
+## 12. Risks & Known Challenges
+- **Cold-start problem**: new users/items with no interaction history — mitigate with content-based fallback
+- **Data sparsity**: rating matrices are usually very sparse — consider matrix factorization over raw KNN
+- **Cross-domain fusion is genuinely hard**: movie taste and music taste don't always correlate — be prepared to keep domains scored separately if a unified fusion underperforms, and say so honestly in the report
+- **Dataset licensing**: check usage terms for MovieLens/TMDB/Spotify datasets before any public deployment or demo with real data
+- **Scope creep**: with 3 people and a fixed timeline, treat visual/audio embeddings (Phase 4 stretch) as optional — cut first if behind schedule
 
 ---
 
-## 📌 Project Status
-
-**Status:** 🚧 `In Development`
-
-### Current Phase
-
-`Phase 1 — Planning & Dataset Selection`
-
-### Upcoming
-
-- [ ] Finalize datasets
-- [ ] Complete data preprocessing
-- [ ] Build Content-Based model
-- [ ] Build Collaborative model
-- [ ] Build Popularity model
-- [ ] Build Hybrid model
-- [ ] Develop API
-- [ ] Develop frontend
-- [ ] Integrate everything
-- [ ] Test the complete system
-- [ ] Deploy application
+## 13. Communication & Task Tracking
+- **Task board**: Trello / Notion / GitHub Projects (pick one, link it here once created)
+- **Chat**: Discord / WhatsApp group (link here)
+- **Meeting cadence**: 2x/week during active development, 1x/week during planning/writing phases
+- **Decision log**: keep a running note of major technical decisions (e.g. "chose SBERT over TF-IDF because...") — useful for the final report and viva/defense questions
 
 ---
 
-## 👨‍💻 Team
+## 14. Team
 
-| Member | Role |
-| :--- | :--- |
-| **Member 1** | Data & Feature Engineering |
-| **Member 2** | Machine Learning & Recommendation |
-| **Member 3** | Backend, Frontend & Integration |
-
-> Replace the member names and profile links once the team is finalized.
+| Name | Role | GitHub |
+|---|---|---|
+| Member A | Data & Content-Based Modeling | @username |
+| Member B | Collaborative Filtering & Fusion | @username |
+| Member C | Backend, Frontend & Deployment | @username |
 
 ---
 
-## 📄 License
+## 15. Acknowledgments & Data Sources
+- [MovieLens](https://grouplens.org/datasets/movielens/) — GroupLens Research, University of Minnesota
+- [TMDB](https://www.themoviedb.org/) — The Movie Database API
+- [Million Song Dataset](http://millionsongdataset.com/) / [Spotify Tracks Dataset](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset)
 
-This project is licensed under the MIT License.
+Cite these properly in the final report if the project is submitted for academic evaluation.
 
 ---
 
-## ⭐ Project Vision
-
-The long-term goal of **RecoSphere** is to create a single intelligent recommendation platform capable of understanding user preferences across different entertainment categories.
-
-Instead of simply recommending what is popular, the system should learn:
-
-```text
-What the user likes
-        +
-How the user interacts
-        +
-What similar users like
-        +
-What content is available
-        ↓
-Personalized Recommendations
-```
-
-> **RecoSphere — Multiple Models. One Personalized Experience.** 🎬
+## 16. License
+Add a license (MIT recommended for academic/team projects) — create a `LICENSE` file in the repo root.
